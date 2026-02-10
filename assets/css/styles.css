@@ -157,6 +157,10 @@ h2 {
   letter-spacing: -1px;
 }
 
+.role-large {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+}
+
 .description {
   font-size: 1.15rem;
   line-height: 1.7;
@@ -192,6 +196,13 @@ a:hover {
   font-weight: 800;
   display: block;
   margin-bottom: 0.5rem;
+}
+
+.stat-note {
+  margin-top: 0.65rem;
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.35;
 }
 
 .red {
