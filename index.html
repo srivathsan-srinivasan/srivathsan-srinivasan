@@ -10,6 +10,15 @@
     <meta name="theme-color" content="#050505" />
     <title>Srivathsan Srinivasan | DevSecOps Engineer</title>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-14SGC36NKH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-14SGC36NKH');
+    </script>
+
     <script>
       document.documentElement.classList.add("js");
     </script>
@@ -36,6 +45,7 @@
       onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js';"
     ></script>
     <script defer src="assets/js/main.js"></script>
+    <script defer src="assets/js/decrypted-text.js"></script>
   </head>
   <body>
     <div id="canvas-container" aria-hidden="true"></div>
@@ -53,7 +63,10 @@
       <!-- Hero -->
       <section class="section hero-section is-visible" id="top" data-accent="#3eff8b">
         <div class="mono green">00 // Initialize Portfolio</div>
-        <h1>Srivathsan<br />Srinivasan</h1>
+        <h1 class="hero-title">
+          <span data-decrypt-text="Srivathsan" data-decrypt-options='{"animateOn":"view","sequential":true,"revealDirection":"start","useOriginalCharsOnly":true,"speed":320}'></span><br />
+          <span data-decrypt-text="Srinivasan" data-decrypt-options='{"animateOn":"view","sequential":true,"revealDirection":"start","useOriginalCharsOnly":true,"speed":320}'></span>
+        </h1>
         <p class="description">
           Senior DevSecOps / Platform Engineer with 9+ years of experience scaling infrastructure,
           hardening security, and optimizing cloud spend across AWS, GCP, and Azure.

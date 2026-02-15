@@ -7,6 +7,15 @@
     <meta name="theme-color" content="#050505" />
     <title>Experience | Srivathsan Srinivasan</title>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-14SGC36NKH"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-14SGC36NKH');
+    </script>
+
     <script>
       document.documentElement.classList.add("js");
     </script>
@@ -33,8 +42,10 @@
       onerror="this.onerror=null;this.src='https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js';"
     ></script>
     <script defer src="assets/js/main.js"></script>
+    <script defer src="assets/js/decrypted-text.js"></script>
+    <script defer src="assets/js/keyword-highlight.js"></script>
   </head>
-  <body>
+  <body class="page-experience">
     <div id="canvas-container" aria-hidden="true"></div>
 
     <header class="site-header">
@@ -47,23 +58,27 @@
         <a href="#contact">Contact</a>
       </nav>
     </header>
+    <div class="decrypt-meter mono" aria-live="polite">DECRYPTING: 100% LEFT</div>
 
     <main class="scroll-wrapper">
-      <section class="section hero-section is-visible" id="experience" data-accent="#ff3e3e">
+      <section class="section hero-section is-visible" id="experience" data-accent="#f4a3a0">
         <div class="mono red">01 // Experience</div>
-        <h1>Work<br />History</h1>
+        <h1 class="hero-title">
+          <span data-decrypt-text="Work" data-decrypt-options='{"animateOn":"view","sequential":true,"revealDirection":"start","useOriginalCharsOnly":true,"speed":320}'></span><br />
+          <span data-decrypt-text="History" data-decrypt-options='{"animateOn":"view","sequential":true,"revealDirection":"start","useOriginalCharsOnly":true,"speed":320}'></span>
+        </h1>
         <p class="description">
           My work experience in the industry with various roles and responsibilities.
         </p>
       </section>
 
-      <section class="section" id="firecompass" data-accent="#ff3e3e">
+      <section class="section" id="firecompass" data-accent="#f4a3a0">
         <div class="mono red">FireCompass</div>
         <h2 class="red">Senior DevSecOps Engineer</h2>
         <div class="timeline-meta mono">Bengaluru • Feb 2021 — Present</div>
         <h3 class="mono">Achievements</h3>
         <ul class="bullets">
-          <li>Spearheaded SOC 2 Type 1 and SOC 2 Type 2 certification achievement, demonstrating commitment to security best practices.</li>
+          <li>Spearheaded SOC 2 Type 1 and SOC 2 Type 2, ISO27001, 27701 certification achievement, demonstrating commitment to security best practices.</li>
           <li>Achieved a 60% reduction in cloud infrastructure costs by leveraging autoscaling, alerting, and budget enforcement across major cloud platforms such as AWS, Azure, GCP, and DigitalOcean with FinOps and Cost Optimization.</li>
           <li>Improved deployment speeds by 80% by developing a customised shell and Python automation suite.</li>
           <li>Completed 60+ sprints along with hotfixes, patch deployments, delivering product suite deployments across AWS, Azure, and GCP.</li>
@@ -114,7 +129,7 @@
         </div>
       </section>
 
-      <section class="section" id="autonom8" data-accent="#3e8bff">
+      <section class="section" id="autonom8" data-accent="#8bb8f4">
         <div class="mono blue">Autonom8 (Uniphore)</div>
         <h2 class="blue">DevOps Engineer</h2>
         <div class="timeline-meta mono">Chennai, Tamil Nadu • Oct 2019 — Feb 2021</div>
@@ -144,7 +159,7 @@
         </div>
       </section>
 
-      <section class="section" id="veritas" data-accent="#3eff8b">
+      <section class="section" id="veritas" data-accent="#8bf4b6">
         <div class="mono green">Veritas Technologies – Concentrix</div>
         <h2 class="green">Operations Representative</h2>
         <div class="timeline-meta mono">Chennai, Tamil Nadu • Oct 2018 — Sep 2019</div>
@@ -163,7 +178,7 @@
           <span class="tag">Documentation</span>
         </div>
       </section>
-      <section class="section" id="symantec" data-accent="#3eff8b">
+      <section class="section" id="symantec" data-accent="#8bf4b6">
         <div class="mono green">Symantec – Sutherland</div>
         <h2 class="green">Senior Technical Support Associate</h2>
         <div class="timeline-meta mono">Chennai, Tamil Nadu • Mar 2018 — Sep 2018</div>
@@ -182,7 +197,7 @@
         </div>
       </section>
 
-      <section class="section" id="parablu" data-accent="#ff3e3e">
+      <section class="section" id="parablu" data-accent="#f4a3a0">
         <div class="mono red">Parablu (CrashPlan)</div>
         <h2 class="red">Network Engineer</h2>
         <div class="timeline-meta mono">Bengaluru, Karnataka • Dec 2014 — Feb 2016</div>
@@ -209,7 +224,7 @@
         </div>
       </section>
 
-      <section class="section" id="dariyal" data-accent="#3e8bff">
+      <section class="section" id="dariyal" data-accent="#8bb8f4">
         <div class="mono blue">Dariyal Games</div>
         <h2 class="blue role-large">Technical Consultant – Freelance</h2>
         <div class="timeline-meta mono">Chennai, Tamil Nadu • Mar 2016 — Feb 2021</div>
@@ -233,7 +248,7 @@
         </div>
       </section>
 
-      <section class="section" id="education" data-accent="#3e8bff">
+      <section class="section" id="education" data-accent="#8bb8f4">
         <div class="mono blue">Education</div>
         <h2 class="blue">B.Sc. in Networking</h2>
         <div class="timeline-meta mono">Madurai Kamaraj University</div>
@@ -243,7 +258,7 @@
         </p>
       </section>
 
-      <section class="section" id="skills" data-accent="#ff3e3e">
+      <section class="section" id="skills" data-accent="#f4a3a0">
         <div class="mono red">02 // Skills</div>
         <h2 class="red">Technologies &amp; Tools</h2>
         <p class="description">Cloud, CI/CD, scripting, observability, and security tooling.</p>
@@ -299,7 +314,7 @@
         </div>
       </section>
 
-      <section class="section" id="contact" data-accent="#3eff8b">
+      <section class="section" id="contact" data-accent="#8bf4b6">
         <div class="mono green">03 // Contact</div>
         <h2>Let’s <span class="green">connect.</span></h2>
         <div class="stats-container">

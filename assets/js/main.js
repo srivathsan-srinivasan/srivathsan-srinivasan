@@ -17,6 +17,12 @@
   let lastPointerY = 0;
   let hasThree = false;
 
+  /* ---- 3D Arrow Cursor state ---- */
+  let arrowMesh = null;
+  let arrowTargetPos = new (window.THREE ? THREE.Vector3 : Object)();
+  let mouseNDC = { x: 0, y: 0 };
+  let mouseActive = false;
+
   function setAccent(hex) {
     if (!hex) return;
     document.documentElement.style.setProperty("--accent", hex);
@@ -53,9 +59,13 @@
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     canvasContainer.appendChild(renderer.domElement);
 
+    const initialAccentHex =
+      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() ||
+      "#3eff8b";
+
     const geometry = new THREE.IcosahedronGeometry(1.8, 1);
     const material = new THREE.MeshBasicMaterial({
-      color: 0x3eff8b,
+      color: new THREE.Color(initialAccentHex),
       wireframe: true,
       transparent: true,
       opacity: 0.22,
@@ -77,24 +87,37 @@
     particles = new THREE.Points(particlesGeom, particlesMat);
     scene.add(particles);
 
+    /* ---- 3D Arrow Cursor ---- */
+    initArrowCursor();
+
     window.addEventListener("resize", onWindowResize, { passive: true });
     window.addEventListener(
       "pointermove",
       (e) => {
         lastPointerX = (e.clientX / window.innerWidth) - 0.5;
         lastPointerY = (e.clientY / window.innerHeight) - 0.5;
+
+        // Update 3D cursor target
+        mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+        mouseActive = true;
+        updateArrowTarget();
       },
       { passive: true },
     );
 
+    // Hide 3D cursor when mouse leaves the window
+    window.addEventListener("pointerleave", () => {
+      mouseActive = false;
+      if (arrowMesh) arrowMesh.visible = false;
+    }, { passive: true });
+    window.addEventListener("pointerenter", () => {
+      mouseActive = true;
+      if (arrowMesh) arrowMesh.visible = true;
+    }, { passive: true });
+
     if (!prefersReducedMotion) animate();
     else renderOnce();
-
-    // Sync core color with current accent (observer may have run before THREE loaded).
-    const currentAccent =
-      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() ||
-      "#3eff8b";
-    applyAccentToCore(currentAccent);
   }
 
   function onWindowResize() {
@@ -111,6 +134,66 @@
     renderer.render(scene, camera);
   }
 
+  /* ---- 3D Arrow Cursor helpers ---- */
+
+  function initArrowCursor() {
+    // Only show 3D cursor on devices with a fine pointer (mouse)
+    const hasFinePointer = window.matchMedia?.("(pointer: fine)")?.matches;
+    if (!hasFinePointer) return;
+
+    const accentHex =
+      getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() ||
+      "#3eff8b";
+
+    // Minimal pointer: a flat chevron arrow, tip at origin pointing up
+    const shape = new THREE.Shape();
+    shape.moveTo(0, 0);          // tip
+    shape.lineTo(-0.10, -0.22);  // left barb
+    shape.lineTo(0, -0.15);      // inner notch
+    shape.lineTo(0.10, -0.22);   // right barb
+    shape.lineTo(0, 0);          // back to tip
+
+    const geometry = new THREE.ExtrudeGeometry(shape, {
+      depth: 0.025,
+      bevelEnabled: false,
+    });
+    // Centre the extrusion depth so the arrow sits flat on z = 0
+    geometry.translate(0, 0, -0.0125);
+
+    const material = new THREE.MeshBasicMaterial({
+      color: new THREE.Color(accentHex),
+      transparent: true,
+      opacity: 0.9,
+      side: THREE.DoubleSide,
+    });
+
+    arrowMesh = new THREE.Mesh(geometry, material);
+    arrowMesh.scale.setScalar(0.55);
+    arrowMesh.renderOrder = 999;
+    arrowMesh.visible = false;
+    arrowTargetPos = new THREE.Vector3();
+    scene.add(arrowMesh);
+
+    document.documentElement.classList.add("has-3d-cursor");
+  }
+
+  function updateArrowTarget() {
+    if (!hasThree || !arrowMesh) return;
+    const vector = new THREE.Vector3(mouseNDC.x, mouseNDC.y, 0.5);
+    vector.unproject(camera);
+    const dir = vector.sub(camera.position).normalize();
+    const dist = (camera.position.z - 0.5) / dir.z;
+    arrowTargetPos = camera.position.clone().add(dir.multiplyScalar(-dist));
+  }
+
+  function updateArrowCursor() {
+    if (!arrowMesh) return;
+    if (!mouseActive) { arrowMesh.visible = false; return; }
+    arrowMesh.visible = true;
+    arrowMesh.position.lerp(arrowTargetPos, 0.35);
+  }
+  /* ---- end 3D cursor ---- */
+
   function animate() {
     rafId = window.requestAnimationFrame(animate);
     if (!hasThree) return;
@@ -119,6 +202,7 @@
     coreMesh.rotation.x += 0.001;
     particles.rotation.y += 0.0005 + lastPointerX * 0.01;
     particles.rotation.x += lastPointerY * 0.01;
+    updateArrowCursor();
     renderer.render(scene, camera);
   }
 
@@ -127,6 +211,20 @@
     const scrollPercent = safeScrollPercent();
     coreMesh.scale.setScalar(1 + scrollPercent * 0.5);
     if (prefersReducedMotion) renderOnce();
+  }
+
+  /* ---- Decrypt-meter progress bar ---- */
+  const decryptMeter = document.querySelector(".decrypt-meter");
+
+  function updateDecryptMeter() {
+    if (!decryptMeter) return;
+    const pct = safeScrollPercent();
+    const remaining = Math.max(0, Math.round((1 - pct) * 100));
+    if (remaining <= 0) {
+      decryptMeter.textContent = "DECRYPTED: COMPLETE";
+    } else {
+      decryptMeter.textContent = "DECRYPTING: " + remaining + "% LEFT";
+    }
   }
 
   function getSectionAccent(section) {
@@ -140,11 +238,18 @@
     if (!hasThree) return;
     try {
       const target = new THREE.Color(hex);
-      coreMesh.material.color.lerp(target, 0.18);
+      coreMesh.material.color.copy(target);
+      applyAccentToShip(target);
       if (prefersReducedMotion) renderOnce();
     } catch {
       // ignore invalid color strings
     }
+  }
+
+  /** Recolor the arrow cursor to match the accent. */
+  function applyAccentToShip(color) {
+    if (!arrowMesh || !arrowMesh.material) return;
+    arrowMesh.material.color.copy(color);
   }
 
   function initReveal() {
@@ -168,7 +273,7 @@
           applyAccentToCore(getSectionAccent(section));
         }
       },
-      { threshold: 0.35 },
+      { threshold: 0.1 },
     );
 
     for (const section of sections) observer.observe(section);
@@ -198,6 +303,7 @@
         ticking = true;
         window.requestAnimationFrame(() => {
           updateThreeForScroll();
+          updateDecryptMeter();
           ticking = false;
         });
       },
@@ -211,6 +317,7 @@
     initScrollHandlers();
     initThree();
     updateThreeForScroll();
+    updateDecryptMeter();
   }
 
   if (document.readyState === "loading") {
